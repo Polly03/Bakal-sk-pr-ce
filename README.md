@@ -1,2 +1,2 @@
-# Bakal-sk-pr-ce
+# Bakalarska prace- aplikace sachu
 Bakalářská práce - aplikace šachů
