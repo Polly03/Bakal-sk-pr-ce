@@ -2,9 +2,9 @@
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
-namespace WpfChatClient
-{
+namespace Bakalarska_prace { 
     public partial class MainWindow : Window
     {
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -21,9 +21,7 @@ namespace WpfChatClient
             AttachConsole(ATTACH_PARENT_PROCESS);
 
             InitializeComponent();
-            MainContent.Content = new LoginView();
-
-            Console.WriteLine("Konzole spuštěna.");
+            Main.Content = new LoginView();
         }
 
      

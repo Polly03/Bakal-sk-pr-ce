@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-using WpfChatClient;
-
 namespace Bakalarska_prace.Views
 {
     /// <summary>
@@ -22,15 +20,10 @@ namespace Bakalarska_prace.Views
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            
-
-            var mainWindow = Application.Current.MainWindow as MainWindow;
-
-            if (mainWindow != null)
+            if (Application.Current.MainWindow is MainWindow mainWindow)
             {
-                mainWindow.MainContent.Content = new GameStartView();
+                mainWindow.Main.Content = new GameStartView();
             }
-
         }
     }
 }

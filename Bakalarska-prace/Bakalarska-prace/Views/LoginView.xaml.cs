@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using WpfChatClient;
 
 namespace Bakalarska_prace.Views
 {
@@ -14,13 +13,11 @@ namespace Bakalarska_prace.Views
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var mainWindow = Application.Current.MainWindow as MainWindow;
-
-            if (mainWindow != null)
+            if (Application.Current.MainWindow is MainWindow mainWindow)
             {
-                mainWindow.MainContent.Content = new GameChoiceView();
+                mainWindow.Main.Content = new MainMenuView();
             }
-      
         }
+
     }
 }

@@ -42,9 +42,6 @@ namespace Bakalarska_prace.Views
                 for (int col = 0; col < 8; col++)
                 {
                     var square = new ObservableGrid();
-                  
-                    square.Height = 1 / 8 * ChessBoard.Height;
-                    square.Width = 1 / 8 * ChessBoard.Width;
 
                     var background = new Border();
                     background.Background = (row + col) % 2 == 0 ? Brushes.White : Brushes.DarkGray;

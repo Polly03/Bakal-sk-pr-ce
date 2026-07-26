@@ -53,7 +53,7 @@ namespace Bakalarska_prace.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Bakalarska-prace;V1.0.0.0;component/views/mainmenuview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Bakalarska-prace;component/views/mainmenuview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\MainMenuView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

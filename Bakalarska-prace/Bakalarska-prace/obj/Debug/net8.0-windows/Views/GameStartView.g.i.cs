@@ -61,7 +61,7 @@ namespace Bakalarska_prace.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Bakalarska-prace;V1.0.0.0;component/views/gamestartview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Bakalarska-prace;component/views/gamestartview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\GameStartView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
