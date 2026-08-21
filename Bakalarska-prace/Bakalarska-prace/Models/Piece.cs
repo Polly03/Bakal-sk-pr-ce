@@ -1,7 +1,7 @@
-﻿
+﻿/*
 namespace Bakalarska_prace.Models
 {
-    public enum PieceColor {white, black};
+
     public enum PieceType {K, Q, N, B, R, P, none}
 
   
@@ -13,13 +13,7 @@ namespace Bakalarska_prace.Models
 
         public bool Highlighted = false;
 
-        /* třída pro reprezentaci figurky
-           každá figurka má svoji barvu, typ a hodnotu
-        
-           hodnota se odvíjí od typu figurky, není tedy potřeba jí dávát do konstruktoru
-        
-           specialní typ figurky emptySpace jsem udělal pro prázdné políčka pro jednodušší pracování s vyměnováním figurek za jiné a
-           obecně mi to přijde jako lepší zpracování než kdyby tam bylo null*/
+     
         public Piece(PieceColor PieceColor, PieceType PieceType)
         {
             this.PieceColor = PieceColor;
@@ -84,3 +78,4 @@ namespace Bakalarska_prace.Models
     
 }
 
+*/

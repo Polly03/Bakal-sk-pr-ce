@@ -12,9 +12,9 @@ TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR
 C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\App.xaml
 9-620701686
 
-15-316592172
-219-1007673055
+17-1222535784
+220-864614434
 MainWindow.xaml;Styles\Buttons.xaml;Styles\General.xaml;Styles\TextBoxes.xaml;Views\GameAgainstPcView.xaml;Views\GameChoiceView.xaml;Views\GameStartView.xaml;Views\LoginView.xaml;Views\MainMenuView.xaml;
 
-True
+False
 

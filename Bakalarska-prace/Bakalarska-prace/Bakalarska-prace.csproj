@@ -12,7 +12,8 @@
   <ItemGroup>
     <PackageReference Include="Chess" Version="1.0.1" />
     <PackageReference Include="Gera.Chess" Version="1.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.10" />
+    <PackageReference Include="Stockfish.NET" Version="1.0.7" />
   </ItemGroup>
 
   <ItemGroup>

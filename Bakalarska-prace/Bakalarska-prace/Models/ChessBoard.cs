@@ -1,5 +1,5 @@
 ﻿
-
+/*
 
 namespace Bakalarska_prace.Models
 {
@@ -9,10 +9,7 @@ namespace Bakalarska_prace.Models
 
         public bool isReversed = false;
 
-        /*
-         *  třída pro reprezentaci šachovnice
-         *  pole 8*8 kde jsou data typy třída figurky
-         */
+       
         public ChessBoard()
         {
             for (int i = 0; i < 8; i++)
@@ -154,3 +151,4 @@ namespace Bakalarska_prace.Models
 
     }
 }
+*/

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Bakalarska-prace")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4ec14666a2eaa680942b27e0811005581daaceb2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1584399e2b27873de31ede807ae0efee1487bd11")]
 [assembly: System.Reflection.AssemblyProductAttribute("Bakalarska-prace")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Bakalarska-prace")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

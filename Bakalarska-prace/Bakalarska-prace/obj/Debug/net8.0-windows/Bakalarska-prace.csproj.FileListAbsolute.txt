@@ -40,7 +40,6 @@ C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\o
 C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\obj\Debug\net8.0-windows\Views\LoginView.g.cs
 C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\obj\Debug\net8.0-windows\Views\MainMenuView.g.cs
 C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\obj\Debug\net8.0-windows\App.g.cs
-C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
 C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\obj\Debug\net8.0-windows\Bakalarska-prace_MarkupCompile.cache
 C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\obj\Debug\net8.0-windows\Bakalarska-prace_MarkupCompile.lref
 C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\obj\Debug\net8.0-windows\App.baml
@@ -62,3 +61,4 @@ C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\o
 C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\obj\Debug\net8.0-windows\Bakalarska-prace.pdb
 C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\obj\Debug\net8.0-windows\Bakalarska-prace.genruntimeconfig.cache
 C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\obj\Debug\net8.0-windows\ref\Bakalarska-prace.dll
+C:\Users\jakpo\source\repos\Bakalarska-prace\Bakalarska-prace\Bakalarska-prace\bin\Debug\net8.0-windows\Stockfish.NET.dll

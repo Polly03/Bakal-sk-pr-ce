@@ -1,39 +1,31 @@
-﻿using Bakalarska_prace.Components;
-using Bakalarska_prace.Views;
-using Bakalarska_prace.Models;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
-// using Chess;
+using Bakalarska_prace.Services;
+using Chess;
+
 
 namespace Bakalarska_prace.Views
 {
     public partial class GameStartView : UserControl
-
-
     {
-        private ChessBoard ActualGame { get; set; }
-
-        private Point TargetPos { get; set; }
+        private readonly ChessGameLogicService _gameService;
+        private string _selectedSquare = null;
 
         public GameStartView()
         {
             InitializeComponent();
-            StartAnalyze();
+            _gameService = new ChessGameLogicService(PieceColor.White);
+
+            InitializeBoardUI();
+            RenderBoard();
         }
 
-        private void StartAnalyze()
-        {
-            GenerateChessboard();
-            ChessBoard sachovnice = new ChessBoard();
-            sachovnice.setChessBoard();
-            ActualGame = sachovnice;
-
-            GetGUIfromBoard(sachovnice);
-        }
-
-        private void GenerateChessboard()
+        private void InitializeBoardUI()
         {
             ChessBoard.Children.Clear();
 
@@ -41,330 +33,150 @@ namespace Bakalarska_prace.Views
             {
                 for (int col = 0; col < 8; col++)
                 {
-                    var square = new ObservableGrid();
+                    var squareGrid = new Grid
+                    {
+                        Tag = ChessGameLogicService.IndexToSquare(row, col)
+                    };
 
-                    var background = new Border();
-                    background.Background = (row + col) % 2 == 0 ? Brushes.White : Brushes.DarkGray;
+                    var background = new Border
+                    {
+                        Background = (row + col) % 2 == 0 ? Brushes.LightGray : Brushes.DarkGray
+                    };
 
-                    square.Children.Add(background);
+                    squareGrid.Children.Add(background);
+                    squareGrid.MouseDown += Square_MouseDown;
 
-                    ChessBoard.Children.Add(square);
+                    ChessBoard.Children.Add(squareGrid);
                 }
             }
         }
 
-        private void Square_Click(object sender, EventArgs e)
+        private void RenderBoard()
         {
             CleanHighlights();
 
-            var square = (TextBlock)sender;
-            var position = (Point)square.Tag;
-            TargetPos = position;
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    int actualRow = _gameService.SideOfBoard == PieceColor.White ? row : 7 - row;
+                    int actualCol = _gameService.SideOfBoard == PieceColor.White ? col : 7 - col;
 
-            var txt = square.Text;
+                    int gridIndex = row * 8 + col;
+                    var squareGrid = (Grid)ChessBoard.Children[gridIndex];
 
-            if (txt == "\u2659") { DrawPawnMoves(txt, position, PieceColor.white); }
-            if (txt == "\u265F") { DrawPawnMoves(txt, position, PieceColor.black); }
-            if (txt == "\u2656") { DrawRookMoves(position, PieceColor.white); }
-            if (txt == "\u265C") { DrawRookMoves(position, PieceColor.black); }
-            if (txt == "\u2657") { DrawBishopMoves(position, PieceColor.white); }
-            if (txt == "\u265D") { DrawBishopMoves(position, PieceColor.black); }
-            if (txt == "\u2655") 
-            {
-                DrawBishopMoves(position, PieceColor.white);
-                DrawRookMoves(position, PieceColor.white);
-            }
-            if (txt == "\u265B")
-            {
-                DrawBishopMoves(position, PieceColor.black);
-                DrawRookMoves(position, PieceColor.black);
-            }
+                    while (squareGrid.Children.Count > 1)
+                    {
+                        squareGrid.Children.RemoveAt(1);
+                    }
 
-            if (txt == "\u2654")
-            {
-                DrawBishopMoves(position, PieceColor.white, true);
-                DrawRookMoves(position, PieceColor.white, true);
-            }
-            if (txt == "\u265A")
-            {
-                DrawBishopMoves(position, PieceColor.black, true);
-                DrawRookMoves(position, PieceColor.black, true);
+                    Piece piece = _gameService.GetPieceAt(actualRow, actualCol);
+                    if (piece != null)
+                    {
+                        TextBlock txtPiece = new TextBlock
+                        {
+                            Text = GetUnicodeSymbol(piece),
+                            FontFamily = new FontFamily("Segoe UI Symbol"),
+                            FontSize = 48,
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            IsHitTestVisible = false 
+                        };
+
+                        squareGrid.Children.Add(txtPiece);
+                    }
+                }
             }
         }
-
-        private void CleanHighlights()
+        private void Square_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            for (int i = 0; i < 64; i++)
+            var squareGrid = (Grid)sender;
+            string clickedSquare = squareGrid.Tag.ToString();
+
+            if (_selectedSquare != null)
             {
-                var grid = (Grid)ChessBoard.Children[i];
-                // Iterate backwards to safely remove during iteration
-                for (int j = grid.Children.Count - 1; j >= 1; j--)  // Start from the end, skip index 0 (Border)
+                if (_gameService.MakeMove(_selectedSquare, clickedSquare))
                 {
-                    if (grid.Children[j] is Ellipse)
+                    _selectedSquare = null;
+                    RenderBoard();
+                    return;
+                }
+            }
+
+            _selectedSquare = clickedSquare;
+            CleanHighlights();
+
+            List<string> validTargets = _gameService.GetValidMovesForSquare(clickedSquare);
+            HighlightValidMoves(validTargets);
+        }
+
+        private void HighlightValidMoves(List<string> targetSquares)
+        {
+            foreach (var target in targetSquares)
+            {
+                foreach (Grid squareGrid in ChessBoard.Children)
+                {
+                    if (squareGrid.Tag?.ToString() == target)
                     {
-                        grid.Children.RemoveAt(j);
+                        Ellipse dot = new Ellipse
+                        {
+                            Width = 20,
+                            Height = 20,
+                            Fill = Brushes.LightGreen,
+                            Opacity = 0.7,
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            IsHitTestVisible = false
+                        };
+
+                        squareGrid.Children.Add(dot);
                     }
                 }
             }
         }
 
-        private void DrawRookMoves(Point position, PieceColor color, bool drawKing = false)
+        private void CleanHighlights()
         {
-            DrawRookMovesWays(position, color, RookWays.up, drawKing);
-            DrawRookMovesWays(position, color, RookWays.down, drawKing);
-            DrawRookMovesWays(position, color, RookWays.left , drawKing);
-            DrawRookMovesWays(position, color, RookWays.right, drawKing);
-        }
-
-        private void DrawBishopMoves(Point position, PieceColor color, bool drawKing = false)
-        {
-            DrawBishopMovesWays(position, color, BishopWays.upLeft, drawKing);
-            DrawBishopMovesWays(position, color, BishopWays.upRight , drawKing);
-            DrawBishopMovesWays(position, color, BishopWays.downLeft, drawKing);
-            DrawBishopMovesWays(position, color, BishopWays.downRight, drawKing);
-        }
-
-
-        private void DrawRookMovesWays(Point position, PieceColor color, RookWays way, bool drawKing = false)
-        {
-            List<Point> list = new List<Point>();
-            int dx = 0, 
-                dy = 0;
-
-            switch (way)
+            foreach (Grid squareGrid in ChessBoard.Children)
             {
-                case RookWays.right: dx = 1; dy = 0; break;
-                case RookWays.left: dx = -1; dy = 0; break;
-                case RookWays.up: dx = 0; dy = -1; break;
-                case RookWays.down: dx = 0; dy = 1; break;
-            }
-
-            int x = (int)position.X + dx;
-            int y = (int)position.Y + dy;
-
-            while (x >= 0 && x < 8 && y >= 0 && y < 8)
-            {
-                var piece = ActualGame.returnIndexes(x, y);
-
-                if (piece.PieceType == PieceType.none)
+                for (int i = squareGrid.Children.Count - 1; i >= 1; i--)
                 {
-                    list.Add(new Point(x, y));
-                }
-                else if (piece.PieceColor != color)
-                {
-                    list.Add(new Point(x, y));
-                    break;
-                }
-                else
-                {
-                    break;
-                }
-                x += dx;
-                y += dy;
-
-                if(drawKing == true) { break; }
-            }
-
-            DrawPointsToClick(list);
-        }
-
-        private void DrawBishopMovesWays(Point position, PieceColor color, BishopWays way, bool drawKing = false)
-        {
-            List<Point> list = new List<Point>();
-            int dx = 0,
-                dy = 0;
-
-            switch (way)
-            {
-                case BishopWays.upLeft: dx = -1; dy = -1; break;
-                case BishopWays.upRight: dx = -1; dy = 1; break;
-                case BishopWays.downLeft: dx = 1; dy = -1; break;
-                case BishopWays.downRight: dx = 1; dy = 1; break;
-            }
-
-            int x = (int)position.X + dx;
-            int y = (int)position.Y + dy;
-
-            while (x >= 0 && x < 8 && y >= 0 && y < 8)
-            {
-                var piece = ActualGame.returnIndexes(x, y);
-
-                if (piece.PieceType == PieceType.none)
-                {
-                    list.Add(new Point(x, y));
-                }
-                else if (piece.PieceColor != color)
-                {
-                    list.Add(new Point(x, y));
-                    break;
-                }
-                else
-                {
-                    break;
-                }
-                x += dx;
-                y += dy;
-
-                if (drawKing == true) 
-                { 
-                    break; 
-                }
-            }
-
-            DrawPointsToClick(list);
-        }
-
-
-        private void DrawPawnMoves(string sxt, Point pt, PieceColor color) {
-
-            List<Point> pts = new List<Point>();
-
-            if (color == PieceColor.white)
-            {
-                if (pt.X == 6)
-                {
-                    Point point1 = new Point(pt.X - 1, pt.Y);
-                    Point point2 = new Point(pt.X - 2, pt.Y);
-                    pts.Add(point1);
-                    pts.Add(point2);
-                }
-                else
-                {
-                    Point point1 = new Point(pt.X - 1, pt.Y);
-                    pts.Add(point1);
-                }
-            }
-            else
-            {
-                if (pt.X == 1)
-                {
-                    Point point1 = new Point(pt.X + 1, pt.Y);
-                    Point point2 = new Point(pt.X + 2, pt.Y);
-                    pts.Add(point1);
-                    pts.Add(point2);
-                }
-                else
-                {
-                    Point point1 = new Point(pt.X + 1, pt.Y);
-                    pts.Add(point1);
-                }
-            }
-            DrawPointsToClick(pts);
-        }
-
-        private void DrawPointsToClick(List<Point> points)
-        {
-            foreach (var point in points)
-            {
-                {
-                    Ellipse highlight = new Ellipse()
+                    if (squareGrid.Children[i] is Ellipse)
                     {
-                        Width = 80,               
-                        Height = 80,
-                        Fill = Brushes.LightGreen,
-                        Opacity = 0.5,
-                        Visibility = Visibility.Visible,
-
-                    };
-                    highlight.MouseDown += (sender, e) =>
-                    {
-                        PlayMove(point);
-                        e.Handled = true;  // Prevent the click from bubbling to the TextBlock below
-                    };
-                
-                    ((Grid)ChessBoard.Children[GridPos(point)]).Children.Add(highlight);
-
-                    Panel.SetZIndex(highlight, 2);
+                        squareGrid.Children.RemoveAt(i);
+                    }
                 }
             }
         }
 
-        private void PlayMove(Point point)
+        private string GetUnicodeSymbol(Piece piece)
         {
-            CleanHighlights();
+            if (piece == null) return string.Empty;
 
-            ActualGame.PrintToConsole();
+            // Vytáhneme znak figurky (např. "P" pro bílého pěšce, "p" pro černého)
+            // Pokud .Notation neexistuje, nahraď za: piece.ToString()
+            string notation = piece.ToString();
 
-            Piece MovingPiece = ActualGame.returnIndexes((int)(TargetPos.X),
-                                                         (int)(TargetPos.Y));
-
-            Piece TargetPiece = ActualGame.returnIndexes((int)(point.X), (int)(point.Y));
-            
-
-            Piece NewMovingPiece = MovingPiece.CopyPiece(MovingPiece);
-            Piece NewTargetPiece = TargetPiece.CopyPiece(TargetPiece);
-
-                ActualGame.SetIndexes((int)(point.X), (int)(point.Y), NewMovingPiece);
-                ActualGame.SetIndexes((int)(TargetPos.X),
-                                      (int)(TargetPos.Y),
-                                      NewTargetPiece.makeEmptySpace());
-            
-            CleanHighlights();
-
-            GetGUIfromBoard(ActualGame);
-
-            ActualGame.PrintToConsole();
-        }
-
-        private int GridPos(Point point)
-        {
-            return (int)(point.X * 8 + point.Y);
-        }
-
-        private void GetGUIfromBoard(ChessBoard board)
-        {
-
-            for (int j = 0; j < 64; j++)
+            return notation switch
             {
-                CleanHighlights();
+                // BÍLÉ FIGURKY (Velká písmena)
+                "wp" => "\u2659",
+                "wr" => "\u2656",
+                "wn" => "\u2658",
+                "wb" => "\u2657",
+                "wq" => "\u2655",
+                "wk" => "\u2654",
 
-                int indexI = j / 8;
-                int indexJ = j % 8;
-                Piece figura = board.returnIndexes(indexI, indexJ);
+                // ČERNÉ FIGURKY (Malá písmena)
+                "bp" => "\u265F",
+                "br" => "\u265C",
+                "bn" => "\u265E",
+                "bb" => "\u265D",
+                "bq" => "\u265B",
+                "bk" => "\u265A",
 
-                TextBlock piece = new TextBlock()
-                {
-
-                    FontFamily = new FontFamily("Segoe UI Symbol"),
-                    FontSize = 75,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Tag = new Point(indexI, indexJ),
-                };
-
-                if (figura.PieceType == PieceType.none) piece.Text = "";
-                if (figura.PieceType == PieceType.P && figura.PieceColor == PieceColor.white) piece.Text = ("\u2659");
-                if (figura.PieceType == PieceType.P && figura.PieceColor == PieceColor.black) piece.Text = ("\u265F");
-                if (figura.PieceType == PieceType.R && figura.PieceColor == PieceColor.white) piece.Text = ("\u2656");
-                if (figura.PieceType == PieceType.R && figura.PieceColor == PieceColor.black) piece.Text = ("\u265C");
-                if (figura.PieceType == PieceType.B && figura.PieceColor == PieceColor.white) piece.Text = ("\u2657");
-                if (figura.PieceType == PieceType.B && figura.PieceColor == PieceColor.black) piece.Text = ("\u265D");
-                if (figura.PieceType == PieceType.N && figura.PieceColor == PieceColor.white) piece.Text = ("\u2658");
-                if (figura.PieceType == PieceType.N && figura.PieceColor == PieceColor.black) piece.Text = ("\u265E");
-                if (figura.PieceType == PieceType.K && figura.PieceColor == PieceColor.white) piece.Text = ("\u2654");
-                if (figura.PieceType == PieceType.K && figura.PieceColor == PieceColor.black) piece.Text = ("\u265A");
-                if (figura.PieceType == PieceType.Q && figura.PieceColor == PieceColor.white) piece.Text = ("\u2655");
-                if (figura.PieceType == PieceType.Q && figura.PieceColor == PieceColor.black) piece.Text = ("\u265B");
-
-                // do uniform Gridu chessboard vezme board na pozici j a do třídy board přidá jako text znak pro figuru
-
-                var grid = (Grid)ChessBoard.Children[j];
-                if (grid.Children.Count > 1)
-                {
-                    grid.Children.RemoveAt(1);  // smaže starou figuru
-                }
-                grid.Children.Add(piece);
-
-                piece.MouseDown += (s, e) =>
-                {
-                    Square_Click(piece, EventArgs.Empty);
-                };
-
-                Panel.SetZIndex(piece, 1);
-
-            }
-            CleanHighlights();
+                _ => string.Empty
+            };
         }
-
     }
 }
