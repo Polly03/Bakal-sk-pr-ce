@@ -6,4 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="Shared">
+      <HintPath>..\..\Shared\Shared\bin\Debug\net8.0\Shared.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
