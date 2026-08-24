@@ -6,7 +6,7 @@
         <TextBox x:Name="Name" Margin="372,245,372,412" Text="test" FontSize="36"/>
         <TextBox x:Name="Password" Margin="372,161,372,496" Text="test" FontSize="36"/>
 
-        <Button Margin="488,352,488,304" FontSize="30" Click="login_Click">přihlásit</Button>
+        <Button Margin="488,352,488,304" FontSize="30" Click="Login_Click">přihlásit</Button>
         <Button Margin="488,454,488,202" FontSize="30" Click="NewUser_Click">Vytvořit účet</Button>
     </Grid>
 </UserControl>

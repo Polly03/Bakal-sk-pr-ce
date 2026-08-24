@@ -1,7 +1,8 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Bakalarska_prace.Models.Auth;
+using Shared.Models.Auth;
+using Urls = Shared.Constants.Constants.ServerUrls;
 
 namespace Bakalarska_prace.Services
 {
@@ -11,13 +12,13 @@ namespace Bakalarska_prace.Services
 
         public AuthService()
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:7000/") };
+            _httpClient = new HttpClient { BaseAddress = new Uri(Urls.HttpUrl) };
         }
 
         public async Task<string?> LoginAsync(string aLogin, string aPassword)
         {
             var loginDto = new LoginRequestDto { Login = aLogin, Password = aPassword };
-            var response = await _httpClient.PostAsJsonAsync("tady dát kam na server", loginDto);
+            var response = await _httpClient.PostAsJsonAsync(Urls.HttpUrl, loginDto);
 
             if (response.IsSuccessStatusCode)
             {
@@ -30,7 +31,7 @@ namespace Bakalarska_prace.Services
         public async Task<RegisterResponseDto?> RegisterAsync(string aUsername, string aPassword, string aEmail)
         {
             var registerDto = new RegisterRequestDto { Username = aUsername, Password = aPassword, Email = aEmail };
-            var response = await _httpClient.PostAsJsonAsync($"tady dát kam na server", registerDto);
+            var response = await _httpClient.PostAsJsonAsync(Urls.HttpUrl, registerDto);
 
             if (response.IsSuccessStatusCode)
             {
